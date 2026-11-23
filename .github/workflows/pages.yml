@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - CreativeArchive-Pages.zip
+      - .github/workflows/pages.yml
 
 permissions:
   contents: read
@@ -25,7 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions/configure-pages@v5
-      - run: unzip -q CreativeArchive-Pages.zip -d site && test -f site/index.html
+      - name: Extract site
+        run: |
+          unzip -q CreativeArchive-Pages.zip -d site || [ "$?" -eq 1 ]
+          test -f site/index.html
+          test -f site/archive-worker.js
+          test -f site/pdfjs/pdf.min.mjs
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
